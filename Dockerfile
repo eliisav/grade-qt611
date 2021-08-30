@@ -76,5 +76,9 @@ RUN rm -r /tmp/* \
 # Base grading tools
 COPY bin /usr/local/bin
 
+#This is a semi hack for a Qt error regarding Qt libraries and Linux system calls in kernel which can't be handled
+#https://askubuntu.com/questions/1034313/ubuntu-18-4-libqt5core-so-5-cannot-open-shared-object-file-no-such-file-or-dir
+RUN strip --remove-section=.note.ABI-tag /usr/local/Qt/6.1.1/gcc_64/lib/libQt6Core.so.6
+
 WORKDIR /submission
 CMD ["bash"]
