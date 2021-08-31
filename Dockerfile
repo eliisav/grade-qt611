@@ -45,6 +45,7 @@ RUN apt_install \
 	  xz-utils \
 	  make \
 	  g++ \
+    libgl1-mesa-dev \
   && rm -rf /root/.cache \
   && cp /usr/bin/chpst /usr/local/bin \
   && dpkg -P runit \
@@ -64,9 +65,17 @@ WORKDIR /tmp
 
 ENV QT_VERSION v6.1.1
 
-RUN aqt install --outputdir /usr/local/Qt 6.1.1 linux desktop gcc_64
+ARG QT=6.1.1
 
-RUN ln -s /usr/local/Qt/6.1.1/gcc_64/bin/qmake /usr/bin/qmake
+RUN aqt install --outputdir /usr/local/Qt ${QT} linux desktop gcc_64
+
+RUN ln -s /usr/local/Qt/${QT}/gcc_64/bin/qmake /usr/bin/qmake
+
+# https://github.com/miurahr/aqtinstall#environment-variables
+ENV PATH /usr/local/Qt/${QT}/gcc_64/bin:$PATH
+ENV QT_PLUGIN_PATH /usr/local/Qt/${QT}/gcc_64/plugins/
+ENV QML_IMPORT_PATH /usr/local/Qt/${QT}/gcc_64/qml/
+ENV QML2_IMPORT_PATH /usr/local/Qt/${QT}/gcc_64/qml/
 
 RUN rm -r /tmp/* \
   && mkdir -p /feedback /submission /exercise \
