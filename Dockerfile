@@ -1,11 +1,9 @@
-FROM ubuntu:latest
+FROM ubuntu:focal
 
 # This container is based on https://github.com/apluslms/grading-base
-#   * instead of debian:buster-slim the ubuntu:latest is used
+#   * instead of debian:buster-slim the ubuntu:focal is used
 #   * python3.8 and pip3 are installed
 #   * Qt 6.1.1 is installed using the aqtinstall tool https://github.com/miurahr/aqtinstall
-
-ENV QT_VERSION v6.1.1
 
 ENV LANG=C.UTF-8 USER=root HOME=/root
 
@@ -31,21 +29,26 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN apt-get -y install python3.8 python3-pip
 
 RUN apt_install \
-	  runit \
-	  ca-certificates \
-	  curl \
-	  gnupg dirmngr \
-	  jo \
-	  jq \
-	  time \
-	  git \
-	  openssh-client \
-	  python3-requests \
-	  wget \
-	  xz-utils \
-	  make \
-	  g++ \
+    runit \
+    ca-certificates \
+    curl \
+    gnupg dirmngr \
+    jo \
+    jq \
+    time \
+    git \
+    openssh-client \
+    python3-requests \
+    xz-utils \
+    make \
+    g++ \
+    unzip \
+    tree \
     libgl1-mesa-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libxkbcommon-dev \
+    libxkbcommon-x11-dev \
   && rm -rf /root/.cache \
   && cp /usr/bin/chpst /usr/local/bin \
   && dpkg -P runit \
@@ -63,19 +66,19 @@ RUN mkdir -p /usr/local/Qt
 
 WORKDIR /tmp
 
-ENV QT_VERSION v6.1.1
-
 ARG QT=6.1.1
 
 RUN aqt install --outputdir /usr/local/Qt ${QT} linux desktop gcc_64
 
 RUN ln -s /usr/local/Qt/${QT}/gcc_64/bin/qmake /usr/bin/qmake
 
+#ENV LD_LIBRARY_PATH /usr/local/Qt/${QT}/gcc_64/lib
+
 # https://github.com/miurahr/aqtinstall#environment-variables
-ENV PATH /usr/local/Qt/${QT}/gcc_64/bin:$PATH
-ENV QT_PLUGIN_PATH /usr/local/Qt/${QT}/gcc_64/plugins/
-ENV QML_IMPORT_PATH /usr/local/Qt/${QT}/gcc_64/qml/
-ENV QML2_IMPORT_PATH /usr/local/Qt/${QT}/gcc_64/qml/
+#ENV PATH /usr/local/Qt/${QT}/gcc_64/bin:$PATH
+#ENV QT_PLUGIN_PATH /usr/local/Qt/${QT}/gcc_64/plugins/
+#ENV QML_IMPORT_PATH /usr/local/Qt/${QT}/gcc_64/qml/
+#ENV QML2_IMPORT_PATH /usr/local/Qt/${QT}/gcc_64/qml/
 
 RUN rm -r /tmp/* \
   && mkdir -p /feedback /submission /exercise \
