@@ -22,7 +22,7 @@ mv $READ .
 mkdir -p /root/.ssh
 cp $1 /root/.ssh/id_rsa
 chmod 600 /root/.ssh/id_rsa
-ssh -T -o "StrictHostKeyChecking no" git@course-gitlab.tuni.fi/ > /dev/null 2&>1
+ssh -T -o "StrictHostKeyChecking no" git@course-gitlab.tuni.fi > /dev/null 2&>1
 mkdir -p $DIR
 cd $DIR
 git clone -q $SOURCE .
